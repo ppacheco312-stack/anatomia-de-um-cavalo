@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Resultados · Anatomia do Cavalo</title>
+<link rel="icon" type="image/png" sizes="32x32" href="anatomia.png">
+<link rel="apple-touch-icon" href="anatomia.png">
+<script>try{var _p=JSON.parse(localStorage.getItem('cavalo_prefs')||'{}');if(_p.theme)document.documentElement.setAttribute('data-theme',_p.theme);}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#E7EAE1; --surface:#F2F4EC; --field:#ffffff;
+    --header-1:rgba(242,244,236,.9); --header-2:rgba(231,234,225,.6);
+    --ink:#1E2A22; --pine:#2E4636; --pine-text:#2E4636; --on-pine:#F2F4EC;
+    --chestnut:#8A4B2A; --chestnut-hover:#78401f; --on-chestnut:#FBF7F1;
+    --brass:#B58A3C; --brass-deep:#946B22; --line:#C8CDBE; --muted:#5E6B5C;
+    --good:#3C6B45; --bad:#9C3B2E; --track:#D6DACC; --seg-bg:rgba(46,70,54,.06);
+    --row:rgba(46,70,54,.03);
+    --shadow:0 1px 0 rgba(30,42,34,.04), 0 18px 40px -24px rgba(30,42,34,.45);
+    color-scheme:light;
+  }
+  html[data-theme="dark"]{
+    --bg:#14180F; --surface:#1E241B; --field:#141912;
+    --header-1:rgba(24,29,20,.92); --header-2:rgba(20,24,15,.7);
+    --ink:#E8ECE0; --pine:#35503F; --pine-text:#9DC4A8; --on-pine:#EAF1E9;
+    --chestnut:#C46B3D; --chestnut-hover:#D5814F; --on-chestnut:#FBF7F1;
+    --brass:#CDA24E; --brass-deep:#E0BC6C; --line:#333B2C; --muted:#9AA891;
+    --good:#77B384; --bad:#DD8472; --track:#2C3327; --seg-bg:rgba(255,255,255,.06);
+    --row:rgba(255,255,255,.03);
+    --shadow:0 1px 0 rgba(0,0,0,.2), 0 22px 46px -24px rgba(0,0,0,.7);
+    color-scheme:dark;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{background:var(--bg);color:var(--ink);font-family:"Hanken Grotesk",system-ui,sans-serif;font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+  a{color:var(--pine-text)}
+
+  header.top{border-bottom:1px solid var(--line);background:linear-gradient(180deg,var(--header-1),var(--header-2));position:sticky;top:0;z-index:5;backdrop-filter:blur(6px)}
+  .top .wrap{display:flex;align-items:center;justify-content:space-between;gap:14px;min-height:70px;flex-wrap:wrap;padding:10px 20px}
+  .brand{font-family:"Fraunces",serif;font-weight:600;font-size:24px;color:var(--pine-text);letter-spacing:-.01em}
+  .brand em{color:var(--chestnut);font-style:normal}
+  .brand .tag{display:block;font-family:"Hanken Grotesk",sans-serif;font-weight:600;font-size:12px;color:var(--muted);letter-spacing:.03em}
+  .head-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+
+  .btn{appearance:none;border:1px solid var(--line);cursor:pointer;font-family:inherit;font-weight:600;font-size:14px;padding:9px 15px;border-radius:10px;background:var(--seg-bg);color:var(--ink);transition:background .15s,color .15s}
+  .btn:hover{background:var(--pine);color:var(--on-pine);border-color:var(--pine)}
+  .btn.primary{background:var(--chestnut);border-color:var(--chestnut);color:var(--on-chestnut)}
+  .btn.primary:hover{background:var(--chestnut-hover);border-color:var(--chestnut-hover)}
+  .btn:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+  .icon-btn{width:38px;height:38px;padding:0;display:grid;place-items:center}
+  .icon-btn svg{width:18px;height:18px}
+  .themebtn .i-sun{display:none}
+  html[data-theme="dark"] .themebtn .i-sun{display:block}
+  html[data-theme="dark"] .themebtn .i-moon{display:none}
+
+  .langseg{display:flex;background:var(--seg-bg);border:1px solid var(--line);border-radius:999px;padding:3px}
+  .langseg button{border:0;background:transparent;font-family:inherit;font-weight:700;font-size:13px;letter-spacing:.03em;color:var(--muted);padding:6px 12px;border-radius:999px;cursor:pointer;transition:color .18s,background .18s}
+  .langseg button[aria-pressed="true"]{background:var(--pine);color:var(--on-pine)}
+  .langseg button:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+
+  main{padding:26px 0 60px}
+  .banner{border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:13px 16px;margin-bottom:18px;font-size:14px;color:var(--muted)}
+  .banner b{color:var(--ink)} .banner code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px}
+  .banner.warn{border-color:var(--brass)}
+
+  .stats{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+  .stat{flex:1;min-width:150px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 18px;box-shadow:var(--shadow)}
+  .stat .k{font-size:13px;color:var(--muted);font-weight:600}
+  .stat .v{font-family:"Fraunces",serif;font-weight:600;font-size:30px;line-height:1.1;margin-top:2px}
+  .stat .v small{font-size:16px;color:var(--muted);font-weight:400}
+
+  .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+  .toolbar input,.toolbar select{font-family:inherit;font-size:14px;padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:var(--field);color:var(--ink)}
+  .toolbar input{min-width:200px}
+  .toolbar .spacer{flex:1}
+  .muted{color:var(--muted);font-size:13px}
+
+  .table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--surface);box-shadow:var(--shadow)}
+  table{border-collapse:collapse;width:100%;font-size:14.5px}
+  th,td{padding:11px 14px;text-align:left;white-space:nowrap}
+  thead th{position:sticky;top:0;background:var(--surface);border-bottom:1.5px solid var(--line);font-weight:700;cursor:pointer;user-select:none}
+  thead th .ar{color:var(--brass-deep);font-size:11px;margin-left:4px}
+  tbody tr:nth-child(even){background:var(--row)}
+  tbody td.num{font-variant-numeric:tabular-nums}
+  .pct{font-weight:700}
+  .pct.hi{color:var(--good)} .pct.mid{color:var(--brass-deep)} .pct.lo{color:var(--bad)}
+  .empty{padding:40px;text-align:center;color:var(--muted)}
+
+  .gate{position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:24px;background:radial-gradient(130% 120% at 50% 10%, var(--surface), var(--bg) 70%)}
+  .gate.hide{display:none}
+  .gate-top{position:absolute;top:16px;right:18px;display:flex;gap:10px;align-items:center}
+  .gate-card{width:min(400px,100%);background:var(--surface);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);padding:34px 30px;text-align:center}
+  .gate-card h1{font-family:"Fraunces",serif;font-weight:600;font-size:24px;margin:0 0 4px;color:var(--pine-text)}
+  .gate-card p{color:var(--muted);font-size:14px;margin:0 0 22px}
+  .gate-card input{width:100%;font-family:inherit;font-size:18px;text-align:center;padding:13px 15px;border:1.5px solid var(--line);border-radius:12px;background:var(--field);color:var(--ink)}
+  .gate-card input:focus{outline:none;border-color:var(--pine-text);box-shadow:0 0 0 3px rgba(46,70,54,.13)}
+  .gate-card .btn{width:100%;justify-content:center;margin-top:14px}
+  .gate-err{color:var(--bad);font-size:14px;min-height:18px;margin-top:12px;font-weight:600}
+</style>
+</head>
+<body>
+
+<div class="gate" id="gate">
+  <div class="gate-top">
+    <div class="langseg" role="group" aria-label="Idioma / Language">
+      <button data-lang="pt" aria-pressed="true">PT</button>
+      <button data-lang="en" aria-pressed="false">EN</button>
+    </div>
+    <button class="btn icon-btn themebtn" id="gateThemeBtn" aria-label="Tema claro/escuro">
+      <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8"/></svg>
+    </button>
+  </div>
+  <div class="gate-card">
+    <h1 data-i18n="gate_title">Área do professor</h1>
+    <p data-i18n="gate_sub">Introduz a palavra-passe para ver os resultados.</p>
+    <input id="pwInput" type="password" autocomplete="off" data-i18n-ph="pw_ph" placeholder="Palavra-passe" aria-label="palavra-passe">
+    <button class="btn primary" id="pwBtn" data-i18n="pw_btn">Entrar</button>
+    <div class="gate-err" id="pwErr" role="alert"></div>
+  </div>
+</div>
+
+<header class="top">
+  <div class="wrap">
+    <div class="brand"><span data-i18n-html="brand_title">Anatomia do <em>Cavalo</em></span><span class="tag" data-i18n="brand_tag">Resultados dos alunos</span></div>
+    <div class="head-actions">
+      <button class="btn" id="refreshBtn" data-i18n="refresh">↻ Atualizar</button>
+      <button class="btn primary" id="csvBtn" data-i18n="csv">⬇ Descarregar CSV</button>
+      <a class="btn" id="sheetLink" href="#" target="_blank" rel="noopener" style="display:none" data-i18n="sheet">Abrir folha</a>
+      <div class="langseg" role="group" aria-label="Idioma / Language">
+        <button data-lang="pt" aria-pressed="true">PT</button>
+        <button data-lang="en" aria-pressed="false">EN</button>
+      </div>
+      <button class="btn icon-btn themebtn" id="themeBtn" aria-label="Tema claro/escuro">
+        <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="banner" id="banner"></div>
+
+    <div class="stats">
+      <div class="stat"><div class="k" data-i18n="st_count">Testes concluídos</div><div class="v" id="stCount">—</div></div>
+      <div class="stat"><div class="k" data-i18n="st_students">Alunos distintos</div><div class="v" id="stStudents">—</div></div>
+      <div class="stat"><div class="k" data-i18n="st_avg">Média</div><div class="v" id="stAvg">—</div></div>
+      <div class="stat"><div class="k" data-i18n="st_classes">Turmas</div><div class="v" id="stClasses">—</div></div>
+    </div>
+
+    <div class="toolbar">
+      <input id="search" type="text" data-i18n-ph="search_ph" placeholder="Procurar por nome…" autocomplete="off">
+      <select id="classFilter"></select>
+      <div class="spacer"></div>
+      <span class="muted" id="shownCount"></span>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th data-sort="name"><span data-i18n="th_name">Nome</span> <span class="ar"></span></th>
+          <th data-sort="class"><span data-i18n="th_class">Turma</span> <span class="ar"></span></th>
+          <th data-sort="score"><span data-i18n="th_result">Resultado</span> <span class="ar"></span></th>
+          <th data-sort="percent"><span data-i18n="th_pct">%</span> <span class="ar"></span></th>
+          <th data-sort="ok_pt_en"><span data-i18n="th_okpe">PT→EN</span> <span class="ar"></span></th>
+          <th data-sort="ok_en_pt"><span data-i18n="th_okep">EN→PT</span> <span class="ar"></span></th>
+          <th data-sort="datetime"><span data-i18n="th_date">Data / Hora</span> <span class="ar"></span></th>
+        </tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+      <div class="empty" id="emptyMsg" style="display:none" data-i18n="empty">Ainda não há resultados.</div>
+    </div>
+  </div>
+</main>
+
+<script>
+/* =========================================================================
+   CONFIGURAÇÃO — tem de coincidir com o index.html e o Apps Script (Code.gs)
+   ========================================================================= */
+const ADMIN_PASSWORD   = "professor";              // ← palavra-passe para abrir esta página
+const RESULTS_ENDPOINT = "https://script.google.com/macros/s/AKfycbxsQ3D7MWHKdX-AGtNs5CrlWSxt7LnTWQblOTkTwjMWF1xpV9q_U4cis-t-FzIMa3-4ZA/exec";                       // ← URL /exec do Google Apps Script (igual ao index.html)
+const SHARED_SECRET    = "EPDRAEQ202627";      // ← igual ao index.html e ao Apps Script
+const SHEET_URL        = "https://docs.google.com/spreadsheets/d/11iVnopP8VJNjHyADvnhtlIz0iHRobR2fNVTlQjrJp68/edit?usp=sharing";                        // ← (opcional) URL da Google Sheet, para o botão "Abrir folha"
+
+/* ---------------- i18n ---------------- */
+const I18N = {
+  pt:{
+    brand_title:'Anatomia do <em>Cavalo</em>',
+    brand_tag:"Resultados dos alunos",
+    refresh:"↻ Atualizar", csv:"⬇ Descarregar CSV", sheet:"Abrir folha",
+    theme_label:"Tema claro/escuro",
+    gate_title:"Área do professor",
+    gate_sub:"Introduz a palavra-passe para ver os resultados.",
+    pw_ph:"Palavra-passe", pw_btn:"Entrar", pw_err:"Palavra-passe incorreta.",
+    st_count:"Testes concluídos", st_students:"Alunos distintos", st_avg:"Média", st_classes:"Turmas",
+    search_ph:"Procurar por nome…", all_classes:"Todas as turmas",
+    th_name:"Nome", th_class:"Turma", th_result:"Resultado", th_pct:"%", th_okpe:"PT→EN", th_okep:"EN→PT", th_date:"Data / Hora",
+    empty:"Ainda não há resultados.", shown:"{n} de {t}", loading:"A carregar…",
+    b_connected:"Ligado à Google Sheet · {n} resultado(s).",
+    b_noendpoint:"<b>Falta configurar o servidor.</b> Preenche <code>RESULTS_ENDPOINT</code> (e <code>SHARED_SECRET</code>) com o URL do Google Apps Script — vê o <b>Code.gs</b>.",
+    b_refused:"O servidor respondeu mas recusou o pedido. Confirma que o <code>SHARED_SECRET</code> é igual ao do Apps Script.",
+    b_error:"<b>Não foi possível contactar o servidor.</b> Confirma o URL <code>/exec</code> e que a implementação está com acesso a “Qualquer pessoa”."
+  },
+  en:{
+    brand_title:'Horse <em>Anatomy</em>',
+    brand_tag:"Student results",
+    refresh:"↻ Refresh", csv:"⬇ Download CSV", sheet:"Open sheet",
+    theme_label:"Light/dark theme",
+    gate_title:"Teacher area",
+    gate_sub:"Enter the password to see the results.",
+    pw_ph:"Password", pw_btn:"Enter", pw_err:"Wrong password.",
+    st_count:"Tests completed", st_students:"Distinct students", st_avg:"Average", st_classes:"Classes",
+    search_ph:"Search by name…", all_classes:"All classes",
+    th_name:"Name", th_class:"Class", th_result:"Result", th_pct:"%", th_okpe:"PT→EN", th_okep:"EN→PT", th_date:"Date / Time",
+    empty:"No results yet.", shown:"{n} of {t}", loading:"Loading…",
+    b_connected:"Connected to the Google Sheet · {n} result(s).",
+    b_noendpoint:"<b>Server not configured.</b> Fill in <code>RESULTS_ENDPOINT</code> (and <code>SHARED_SECRET</code>) with your Google Apps Script URL — see <b>Code.gs</b>.",
+    b_refused:"The server responded but refused the request. Check that <code>SHARED_SECRET</code> matches the one in the Apps Script.",
+    b_error:"<b>Couldn't reach the server.</b> Check the <code>/exec</code> URL and that the deployment access is set to “Anyone”."
+  }
+};
+
+const el = id => document.getElementById(id);
+let rows = [];
+let sortKey = "datetime", sortDir = -1;
+let bannerState = null;
+let lang="pt", theme="light";
+try{ const p=JSON.parse(localStorage.getItem('cavalo_prefs')||'{}'); if(p.lang)lang=p.lang; if(p.theme)theme=p.theme; }catch(e){}
+const t = k => (I18N[lang][k]!==undefined ? I18N[lang][k] : k);
+function savePrefs(){ try{ const p=JSON.parse(localStorage.getItem('cavalo_prefs')||'{}'); p.lang=lang; p.theme=theme; localStorage.setItem('cavalo_prefs',JSON.stringify(p)); }catch(e){} }
+
+/* ---- theme ---- */
+function applyTheme(){ document.documentElement.setAttribute("data-theme",theme); savePrefs(); }
+function toggleTheme(){ theme=theme==="dark"?"light":"dark"; applyTheme(); }
+el("themeBtn").addEventListener("click",toggleTheme);
+el("gateThemeBtn").addEventListener("click",toggleTheme);
+
+/* ---- language ---- */
+function applyLang(){
+  document.documentElement.lang=lang;
+  document.querySelectorAll("[data-i18n]").forEach(e=>e.textContent=t(e.dataset.i18n));
+  document.querySelectorAll("[data-i18n-html]").forEach(e=>e.innerHTML=t(e.dataset.i18nHtml));
+  document.querySelectorAll("[data-i18n-ph]").forEach(e=>e.placeholder=t(e.dataset.i18nPh));
+  el("themeBtn").setAttribute("aria-label",t("theme_label"));
+  el("gateThemeBtn").setAttribute("aria-label",t("theme_label"));
+  document.querySelectorAll(".langseg button").forEach(b=>b.setAttribute("aria-pressed", b.dataset.lang===lang));
+  renderBanner();
+  render();
+  savePrefs();
+}
+document.querySelectorAll(".langseg button").forEach(b=>b.addEventListener("click",()=>{ lang=b.dataset.lang; applyLang(); }));
+
+/* ---- password gate ---- */
+function unlock(){ el("gate").classList.add("hide"); load(); }
+el("pwBtn").addEventListener("click",()=>{
+  if(el("pwInput").value===ADMIN_PASSWORD){ el("pwErr").textContent=""; unlock(); }
+  else { el("pwErr").textContent=t("pw_err"); el("pwInput").select(); }
+});
+el("pwInput").addEventListener("keydown",e=>{ if(e.key==="Enter") el("pwBtn").click(); });
+setTimeout(()=>el("pwInput").focus(),60);
+
+/* ---- data loading (Google Sheet only) ---- */
+function jsonp(url){
+  return new Promise((res,rej)=>{
+    const cb="cb_"+Math.random().toString(36).slice(2);
+    const s=document.createElement("script");
+    const done=()=>{ delete window[cb]; s.remove(); };
+    window[cb]=d=>{ res(d); done(); };
+    s.onerror=()=>{ rej(new Error("network")); done(); };
+    s.src=url+(url.includes("?")?"&":"?")+"callback="+cb;
+    document.body.appendChild(s);
+    setTimeout(()=>{ if(window[cb]){ rej(new Error("timeout")); done(); } },8000);
+  });
+}
+function renderBanner(){
+  const banner=el("banner"); if(!bannerState){ banner.textContent=""; banner.className="banner"; return; }
+  const s=bannerState;
+  if(s.type==="loading"){ banner.className="banner"; banner.textContent=t("loading"); }
+  else if(s.type==="connected"){ banner.className="banner"; banner.textContent=t("b_connected").replace("{n}",s.n); }
+  else { banner.className="banner warn"; banner.innerHTML=t("b_"+s.type); }
+}
+async function load(){
+  if(!RESULTS_ENDPOINT){ rows=[]; bannerState={type:"noendpoint"}; renderBanner(); render(); return; }
+  bannerState={type:"loading"}; renderBanner();
+  try{
+    const d=await jsonp(RESULTS_ENDPOINT+"?action=list&secret="+encodeURIComponent(SHARED_SECRET));
+    if(d && d.ok && Array.isArray(d.rows)){
+      const head=d.rows[0]||[]; const ix=n=>head.indexOf(n);
+      rows=d.rows.slice(1).map(r=>({
+        name:r[ix("name")]||"", class:r[ix("class")]||"", score:+r[ix("score")]||0,
+        total:+r[ix("total")]||0, percent:+r[ix("percent")]||0,
+        "ok_pt_en":+r[ix("ok_pt_en")]||0, "ok_en_pt":+r[ix("ok_en_pt")]||0,
+        datetime:r[ix("datetime")]||"" }));
+      bannerState={type:"connected", n:rows.length};
+    }else{ rows=[]; bannerState={type:"refused"}; }
+  }catch(e){ rows=[]; bannerState={type:"error"}; }
+  renderBanner();
+  if(SHEET_URL){ const a=el("sheetLink"); a.href=SHEET_URL; a.style.display="inline-flex"; }
+  render();
+}
+
+/* ---- render ---- */
+function fmtDate(v){
+  if(!v) return "";
+  const m=/^(\d{4}-\d{2}-\d{2})[ T](\d{2}:\d{2})/.exec(String(v));
+  if(m) return m[1]+" "+m[2];               // já vem legível (hora de Lisboa) do servidor
+  const d=new Date(v); if(isNaN(d)) return String(v);
+  const p=n=>String(n).padStart(2,"0");
+  return d.getFullYear()+"-"+p(d.getMonth()+1)+"-"+p(d.getDate())+" "+p(d.getHours())+":"+p(d.getMinutes());
+}
+function pctClass(p){ return p>=80?"hi":(p>=50?"mid":"lo"); }
+function filtered(){
+  const q=el("search").value.trim().toLowerCase();
+  const cf=el("classFilter").value;
+  let r=rows.filter(x=>(!q||x.name.toLowerCase().includes(q)) && (!cf||x.class===cf));
+  r.sort((a,b)=>{
+    let va=a[sortKey], vb=b[sortKey];
+    if(sortKey==="name"||sortKey==="class"||sortKey==="datetime"){ va=(""+va).toLowerCase(); vb=(""+vb).toLowerCase(); return va<vb?-sortDir:va>vb?sortDir:0; }
+    return (va-vb)*sortDir;
+  });
+  return r;
+}
+function render(){
+  const cf=el("classFilter"), cur=cf.value;
+  const classes=[...new Set(rows.map(r=>r.class).filter(Boolean))].sort();
+  cf.innerHTML='<option value="">'+t("all_classes")+'</option>'+classes.map(c=>`<option value="${c}">${c}</option>`).join("");
+  cf.value=cur;
+  el("stCount").textContent=rows.length;
+  el("stStudents").textContent=new Set(rows.map(r=>r.name+"|"+r.class)).size;
+  const avg=rows.length?Math.round(rows.reduce((s,r)=>s+r.percent,0)/rows.length):0;
+  el("stAvg").innerHTML=rows.length?avg+'<small>%</small>':"—";
+  el("stClasses").textContent=classes.length;
+  document.querySelectorAll("thead th").forEach(th=>{
+    const s=th.querySelector(".ar"); if(!s) return;
+    s.textContent = th.dataset.sort===sortKey ? (sortDir>0?"▲":"▼") : "";
+  });
+  const data=filtered();
+  el("shownCount").textContent=t("shown").replace("{n}",data.length).replace("{t}",rows.length);
+  el("tbody").innerHTML=data.map(r=>`<tr>
+    <td>${esc(r.name)}</td>
+    <td>${esc(r.class)}</td>
+    <td class="num">${r.score}/${r.total}</td>
+    <td class="num pct ${pctClass(r.percent)}">${r.percent}%</td>
+    <td class="num">${r["ok_pt_en"]}</td>
+    <td class="num">${r["ok_en_pt"]}</td>
+    <td class="num">${fmtDate(r.datetime)}</td>
+  </tr>`).join("");
+  el("emptyMsg").style.display=data.length?"none":"block";
+}
+function esc(s){ return (s==null?"":String(s)).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+
+document.querySelectorAll("thead th").forEach(th=>th.addEventListener("click",()=>{
+  const k=th.dataset.sort;
+  if(k===sortKey) sortDir*=-1; else { sortKey=k; sortDir=(k==="datetime")?-1:1; }
+  render();
+}));
+el("search").addEventListener("input",render);
+el("classFilter").addEventListener("change",render);
+el("refreshBtn").addEventListener("click",load);
+
+/* ---- CSV export ---- */
+function toCSV(list){
+  const cols=["name","class","score","total","percent","ok_pt_en","ok_en_pt","datetime"];
+  const q=v=>{ v=(v==null?"":String(v)); return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v; };
+  return cols.join(",")+"\n"+list.map(o=>cols.map(c=>q(o[c])).join(",")).join("\n");
+}
+el("csvBtn").addEventListener("click",()=>{
+  const blob=new Blob(["\ufeff"+toCSV(filtered())],{type:"text/csv;charset=utf-8"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob); a.download="resultados-anatomia-cavalo.csv";
+  document.body.appendChild(a); a.click(); a.remove();
+});
+
+/* ---- init ---- */
+applyTheme();
+applyLang();
+</script>
+</body>
+</html>
