@@ -885,7 +885,10 @@ function renderFeedback(){
     el("fbDetail").innerHTML=t("detail_no").replace("{ans}",f.canonical).replace("{pt}","<b>"+p.pt+"</b>").replace("{en}","<b>"+p.en+"</b>");
   }
 }
-function nextQ(){ idx++; if(idx>=order.length) showResults(); else renderQ(); }
+function nextQ(){
+  if(!answered || idx>=order.length) return;   // one step per answered question; results only once
+  idx++; if(idx>=order.length) showResults(); else renderQ();
+}
 function bucket(pct){ return pct===100?"perfect":pct>=80?"great":pct>=60?"good":pct>=40?"ok":"low"; }
 function showResults(){
   game.style.display="none"; results.style.display="block";
@@ -908,8 +911,14 @@ el("submitBtn").addEventListener("click",checkAnswer);
 el("nextBtn").addEventListener("click",nextQ);
 el("retryBtn").addEventListener("click",startQuiz);
 el("backToAtlas").addEventListener("click",()=>selectTab("atlas"));
-el("answerInput").addEventListener("keydown",e=>{ if(e.key==="Enter") checkAnswer(); });
-document.addEventListener("keydown",e=>{ if(e.key==="Enter"&&answered&&game.style.display!=="none") nextQ(); });
+// Enter in the answer box only checks the answer (the feedback stays on screen)
+el("answerInput").addEventListener("keydown",e=>{ if(e.key==="Enter"){ e.preventDefault(); e.stopPropagation(); checkAnswer(); } });
+// Enter anywhere else moves on — except on a button, whose own click already does it
+document.addEventListener("keydown",e=>{
+  if(e.key!=="Enter" || e.repeat || !answered || game.style.display==="none") return;
+  if(e.target.closest && e.target.closest("button")) return;
+  nextQ();
+});
 
 /* ---------------- access gate (Kahoot-style) ---------------- */
 /* === CÓDIGO DE ACESSO DA TURMA ===
