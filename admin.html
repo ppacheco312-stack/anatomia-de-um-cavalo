@@ -4,8 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Resultados · Anatomia do Cavalo</title>
-<link rel="icon" type="image/png" sizes="32x32" href="anatomia.png">
-<link rel="apple-touch-icon" href="anatomia.png">
 <script>try{var _p=JSON.parse(localStorage.getItem('cavalo_prefs')||'{}');if(_p.theme)document.documentElement.setAttribute('data-theme',_p.theme);}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -90,7 +88,7 @@
   .pct.hi{color:var(--good)} .pct.mid{color:var(--brass-deep)} .pct.lo{color:var(--bad)}
   .empty{padding:40px;text-align:center;color:var(--muted)}
 
-  .gate{position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:24px;background:radial-gradient(130% 120% at 50% 10%, var(--surface), var(--bg) 70%)}
+  .gate{position:fixed;inset:0;z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:space-between;gap:16px;overflow:auto;padding:56px 20px 22px;background:radial-gradient(130% 120% at 50% 10%, var(--surface), var(--bg) 70%)}
   .gate.hide{display:none}
   .gate-top{position:absolute;top:16px;right:18px;display:flex;gap:10px;align-items:center}
   .gate-card{width:min(400px,100%);background:var(--surface);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);padding:34px 30px;text-align:center}
@@ -100,6 +98,21 @@
   .gate-card input:focus{outline:none;border-color:var(--pine-text);box-shadow:0 0 0 3px rgba(46,70,54,.13)}
   .gate-card .btn{width:100%;justify-content:center;margin-top:14px}
   .gate-err{color:var(--bad);font-size:14px;min-height:18px;margin-top:12px;font-weight:600}
+
+  .logos-official{display:inline-flex;align-items:center;gap:16px;background:#fff;padding:9px 15px;border-radius:12px;border:1px solid rgba(0,0,0,.06);box-shadow:var(--shadow);max-width:100%;flex-wrap:wrap;justify-content:center}
+  .logos-official img{display:block;height:38px;width:auto}
+  .funding{display:inline-flex;align-items:center;background:#fff;padding:9px 14px;border-radius:12px;border:1px solid rgba(0,0,0,.06);box-shadow:var(--shadow)}
+  .funding img{display:block;height:36px;width:auto;max-width:100%}
+  .head-left{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .gate-official .logos-official img{height:44px}
+  .gate-official,.gate-fund{margin:0;flex:0 0 auto}
+  footer.attrib{border-top:1px solid var(--line);margin-top:30px}
+  footer.attrib .wrap{padding:20px;display:flex;justify-content:center;align-items:center}
+  @media (max-width:560px){ .logos-official{gap:12px} .logos-official img{height:32px} .gate-official .logos-official img{height:38px} }
+  header.top .logos-official{gap:10px;padding:6px 11px}
+  header.top .logos-official img{height:30px}
+  .top .wrap{flex-wrap:nowrap}
+  @media (max-width:1040px){ .top .wrap{flex-wrap:wrap} }
 </style>
 </head>
 <body>
@@ -115,6 +128,7 @@
       <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8"/></svg>
     </button>
   </div>
+  <div class="gate-official"><div class="logos-official"><img src="images/epdra.png" alt="EPDRA"><img src="images/republica-portuguesa.png" alt="República Portuguesa — Educação, Ciência e Inovação"><img src="images/dgeste.png" alt="DGEstE — Direção-Geral dos Estabelecimentos Escolares"></div></div>
   <div class="gate-card">
     <h1 data-i18n="gate_title">Área do professor</h1>
     <p data-i18n="gate_sub">Introduz a palavra-passe para ver os resultados.</p>
@@ -122,11 +136,15 @@
     <button class="btn primary" id="pwBtn" data-i18n="pw_btn">Entrar</button>
     <div class="gate-err" id="pwErr" role="alert"></div>
   </div>
+  <div class="gate-fund"><span class="funding"><img src="images/pessoas2030.png" alt="Cofinanciado pela União Europeia — Portugal 2030 · PESSOAS 2030"></span></div>
 </div>
 
 <header class="top">
   <div class="wrap">
-    <div class="brand"><span data-i18n-html="brand_title">Anatomia do <em>Cavalo</em></span><span class="tag" data-i18n="brand_tag">Resultados dos alunos</span></div>
+    <div class="head-left">
+      <div class="logos-official"><img src="images/epdra.png" alt="EPDRA"><img src="images/republica-portuguesa.png" alt="República Portuguesa — Educação, Ciência e Inovação"><img src="images/dgeste.png" alt="DGEstE — Direção-Geral dos Estabelecimentos Escolares"></div>
+      <div class="brand"><span data-i18n-html="brand_title">Anatomia do <em>Cavalo</em></span><span class="tag" data-i18n="brand_tag">Resultados dos alunos</span></div>
+    </div>
     <div class="head-actions">
       <button class="btn" id="refreshBtn" data-i18n="refresh">↻ Atualizar</button>
       <button class="btn primary" id="csvBtn" data-i18n="csv">⬇ Descarregar CSV</button>
@@ -183,10 +201,10 @@
 /* =========================================================================
    CONFIGURAÇÃO — tem de coincidir com o index.html e o Apps Script (Code.gs)
    ========================================================================= */
-const ADMIN_PASSWORD   = "professor";              // ← palavra-passe para abrir esta página
-const RESULTS_ENDPOINT = "https://script.google.com/macros/s/AKfycbxsQ3D7MWHKdX-AGtNs5CrlWSxt7LnTWQblOTkTwjMWF1xpV9q_U4cis-t-FzIMa3-4ZA/exec";                       // ← URL /exec do Google Apps Script (igual ao index.html)
-const SHARED_SECRET    = "EPDRAEQ202627";      // ← igual ao index.html e ao Apps Script
-const SHEET_URL        = "https://docs.google.com/spreadsheets/d/11iVnopP8VJNjHyADvnhtlIz0iHRobR2fNVTlQjrJp68/edit?usp=sharing";                        // ← (opcional) URL da Google Sheet, para o botão "Abrir folha"
+const RESULTS_ENDPOINT = "https://script.google.com/macros/s/AKfycbySOYPOk1l9eGSQHXERtJklCL0vfla46xfFjRlJdy9i0cz8tJVjo09IBGAMuDq2GwFlPQ/exec";                       // ← URL /exec do Google Apps Script (igual ao index.html)
+const SHEET_URL        = "";                        // ← (opcional) URL da Google Sheet, para o botão "Abrir folha"; deixa vazio se o site for público
+// A palavra-passe NÃO está aqui: é verificada pelo Apps Script (propriedade ADMIN_PASSWORD).
+let adminPw = "";
 
 /* ---------------- i18n ---------------- */
 const I18N = {
@@ -203,8 +221,8 @@ const I18N = {
     th_name:"Nome", th_class:"Turma", th_result:"Resultado", th_pct:"%", th_okpe:"PT→EN", th_okep:"EN→PT", th_date:"Data / Hora",
     empty:"Ainda não há resultados.", shown:"{n} de {t}", loading:"A carregar…",
     b_connected:"Ligado à Google Sheet · {n} resultado(s).",
-    b_noendpoint:"<b>Falta configurar o servidor.</b> Preenche <code>RESULTS_ENDPOINT</code> (e <code>SHARED_SECRET</code>) com o URL do Google Apps Script — vê o <b>Code.gs</b>.",
-    b_refused:"O servidor respondeu mas recusou o pedido. Confirma que o <code>SHARED_SECRET</code> é igual ao do Apps Script.",
+    b_noendpoint:"<b>Falta configurar o servidor.</b> Preenche <code>RESULTS_ENDPOINT</code> com o URL do Google Apps Script — vê o <b>Code.gs</b>.",
+    b_refused:"O servidor respondeu mas recusou o pedido. Confirma a palavra-passe (propriedade <code>ADMIN_PASSWORD</code> do Apps Script).",
     b_error:"<b>Não foi possível contactar o servidor.</b> Confirma o URL <code>/exec</code> e que a implementação está com acesso a “Qualquer pessoa”."
   },
   en:{
@@ -220,8 +238,8 @@ const I18N = {
     th_name:"Name", th_class:"Class", th_result:"Result", th_pct:"%", th_okpe:"PT→EN", th_okep:"EN→PT", th_date:"Date / Time",
     empty:"No results yet.", shown:"{n} of {t}", loading:"Loading…",
     b_connected:"Connected to the Google Sheet · {n} result(s).",
-    b_noendpoint:"<b>Server not configured.</b> Fill in <code>RESULTS_ENDPOINT</code> (and <code>SHARED_SECRET</code>) with your Google Apps Script URL — see <b>Code.gs</b>.",
-    b_refused:"The server responded but refused the request. Check that <code>SHARED_SECRET</code> matches the one in the Apps Script.",
+    b_noendpoint:"<b>Server not configured.</b> Fill in <code>RESULTS_ENDPOINT</code> with your Google Apps Script URL — see <b>Code.gs</b>.",
+    b_refused:"The server responded but refused the request. Check the password (the <code>ADMIN_PASSWORD</code> property in the Apps Script).",
     b_error:"<b>Couldn't reach the server.</b> Check the <code>/exec</code> URL and that the deployment access is set to “Anyone”."
   }
 };
@@ -256,11 +274,14 @@ function applyLang(){
 }
 document.querySelectorAll(".langseg button").forEach(b=>b.addEventListener("click",()=>{ lang=b.dataset.lang; applyLang(); }));
 
-/* ---- password gate ---- */
-function unlock(){ el("gate").classList.add("hide"); load(); }
-el("pwBtn").addEventListener("click",()=>{
-  if(el("pwInput").value===ADMIN_PASSWORD){ el("pwErr").textContent=""; unlock(); }
-  else { el("pwErr").textContent=t("pw_err"); el("pwInput").select(); }
+/* ---- password gate (checked by the server) ---- */
+el("pwBtn").addEventListener("click",async ()=>{
+  const pw=el("pwInput").value; if(!pw){ el("pwInput").focus(); return; }
+  el("pwBtn").disabled=true; el("pwErr").textContent="";
+  adminPw=pw; await load();
+  el("pwBtn").disabled=false;
+  if(bannerState && bannerState.type==="refused"){ adminPw=""; el("pwErr").textContent=t("pw_err"); el("pwInput").select(); return; }
+  el("gate").classList.add("hide");
 });
 el("pwInput").addEventListener("keydown",e=>{ if(e.key==="Enter") el("pwBtn").click(); });
 setTimeout(()=>el("pwInput").focus(),60);
@@ -270,12 +291,13 @@ function jsonp(url){
   return new Promise((res,rej)=>{
     const cb="cb_"+Math.random().toString(36).slice(2);
     const s=document.createElement("script");
-    const done=()=>{ delete window[cb]; s.remove(); };
-    window[cb]=d=>{ res(d); done(); };
-    s.onerror=()=>{ rej(new Error("network")); done(); };
+    let settled=false;
+    const clean=()=>{ if(s.parentNode) s.parentNode.removeChild(s); };
+    window[cb]=d=>{ settled=true; clean(); res(d); window[cb]=function(){}; setTimeout(()=>{ try{ delete window[cb]; }catch(_){} },2000); };
+    s.onerror=()=>{ if(!settled){ settled=true; clean(); rej(new Error("network")); } };
     s.src=url+(url.includes("?")?"&":"?")+"callback="+cb;
     document.body.appendChild(s);
-    setTimeout(()=>{ if(window[cb]){ rej(new Error("timeout")); done(); } },8000);
+    setTimeout(()=>{ if(!settled){ settled=true; clean(); rej(new Error("timeout")); } },25000);
   });
 }
 function renderBanner(){
@@ -285,11 +307,21 @@ function renderBanner(){
   else if(s.type==="connected"){ banner.className="banner"; banner.textContent=t("b_connected").replace("{n}",s.n); }
   else { banner.className="banner warn"; banner.innerHTML=t("b_"+s.type); }
 }
+async function getRows(){
+  const base=RESULTS_ENDPOINT+"?action=list&pw="+encodeURIComponent(adminPw);
+  // 1) tenta um fetch normal (não injeta script de outro site; passa por mais bloqueadores)
+  try{
+    const r=await fetch(base,{method:"GET"});
+    if(r.ok){ const d=await r.json(); if(d && d.ok) return d; }
+  }catch(e){ /* CORS ou bloqueado → recorre ao JSONP */ }
+  // 2) recurso: JSONP
+  return await jsonp(base);
+}
 async function load(){
   if(!RESULTS_ENDPOINT){ rows=[]; bannerState={type:"noendpoint"}; renderBanner(); render(); return; }
   bannerState={type:"loading"}; renderBanner();
   try{
-    const d=await jsonp(RESULTS_ENDPOINT+"?action=list&secret="+encodeURIComponent(SHARED_SECRET));
+    const d=await getRows();
     if(d && d.ok && Array.isArray(d.rows)){
       const head=d.rows[0]||[]; const ix=n=>head.indexOf(n);
       rows=d.rows.slice(1).map(r=>({
@@ -381,5 +413,9 @@ el("csvBtn").addEventListener("click",()=>{
 applyTheme();
 applyLang();
 </script>
+<footer class="attrib">
+  <div class="wrap"><span class="funding"><img src="images/pessoas2030.png" alt="Cofinanciado pela União Europeia — Portugal 2030 · PESSOAS 2030"></span></div>
+</footer>
+
 </body>
 </html>
